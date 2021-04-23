@@ -1,0 +1,57 @@
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+name: CI
+
+jobs:
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          # MSRV
+          - 1.46.0
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+          components: clippy
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -- -D clippy::dbg_macro -D warnings -D missing_docs -F unused_must_use
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          components: rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check

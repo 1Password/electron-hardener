@@ -5,6 +5,8 @@ on:
   pull_request:
 
 name: CI
+permissions:
+  contents: read
 
 jobs:
   clippy:
@@ -18,6 +20,8 @@ jobs:
           - 1.46.0
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -33,6 +37,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -46,6 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal

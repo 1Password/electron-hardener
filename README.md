@@ -15,7 +15,7 @@ address space, it should not be able to change what an app does at runtime.
 
 The library provides two sets of functionality:
  - An interface to view and modify the status of fuses in an application, similar to the [official fuses package](https://github.com/electron/fuses).
- - A fast and configurable alternative implementation of the [electron-evil-feature-patcher](https://github.com/antelle/electron-evil-feature-patcher) tool created by [Dimitri Witkowski]().
+ - A fast and configurable alternative implementation of the [electron-evil-feature-patcher](https://github.com/antelle/electron-evil-feature-patcher) tool created by [Dimitri Witkowski].
 All patches it can perform are also exposed in this crate. See its README for more details on how it works.
 
 ## Usage

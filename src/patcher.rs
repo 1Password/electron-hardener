@@ -50,7 +50,7 @@ pub enum NodeJsCommandLineFlag {
 impl NodeJsCommandLineFlag {
     const fn search_string(&self) -> &'static str {
         match self {
-            Self::Inspect => "\0--inspect\0",
+            Self::Inspect => r"(?-u)\xAA--inspect\x00",
             Self::InspectBrk => "\0--inspect-brk\0",
             Self::InspectPort => "\0--inspect-port\0",
             Self::Debug => "\0--debug\0",

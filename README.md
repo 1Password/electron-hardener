@@ -54,6 +54,9 @@ Make sure you have a [Rust compiler](https://rustup.rs/) installed and then run
 cargo install electron-hardener
 ```
 
+## Electron compatibility
+`electron-harder` tracks the latest stable version of Electron. Functionality is currently tested on a minimum version of Electron 13. Older versions may partially work but this is not guaranteed.
+
 ## MSRV
 
 The Minimum Supported Rust Version is currently 1.46.0. This will be bumped to the latest stable version of Rust when needed.

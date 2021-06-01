@@ -9,7 +9,7 @@
 //! - A fast and configurable alternative implementation of the [electron-evil-feature-patcher] tool created by [Dimitri Witkowski].
 //!     All patches it can perform are also exposed in this crate. See its README for more details on how it works.
 //!
-//! Functionality is tested on a minimum version of Electron 12. Older versions may work but this is not guaranteed.
+//! Functionality is tested on a minimum version of Electron 13. Older versions may partially work but this is not guaranteed.
 //!
 //! ### A Note on Effectiveness
 //!

@@ -50,7 +50,7 @@ pub enum NodeJsCommandLineFlag {
 impl NodeJsCommandLineFlag {
     const fn search_string(&self) -> &'static str {
         match self {
-            Self::Inspect => r"(?-u)\xAA--inspect\x00",
+            Self::Inspect => "\0--inspect\0",
             Self::InspectBrk => "\0--inspect-brk\0",
             Self::InspectPort => "\0--inspect-port\0",
             Self::Debug => "\0--debug\0",
@@ -60,6 +60,15 @@ impl NodeJsCommandLineFlag {
             Self::InspectPublishUid => "\0--inspect-publish-uid\0",
         }
     }
+
+    const fn fallback_search_string(&self) -> Option<&'static str> {
+        // Electron 13 Windows binaries have flags laid out differently.
+        if matches!(self, Self::Inspect) {
+            Some(r"(?-u)\xAA--inspect\x00")
+        } else {
+            None
+        }
+    }
 }
 
 impl Patchable for NodeJsCommandLineFlag {
@@ -67,6 +76,12 @@ impl Patchable for NodeJsCommandLineFlag {
         let search = Regex::new(self.search_string()).expect("all regex patterns should be valid");
         let found = search
             .find(binary)
+            .or_else(|| {
+                self.fallback_search_string().and_then(|s| {
+                    let search = Regex::new(s).expect("all regex patterns should be valid");
+                    search.find(binary)
+                })
+            })
             .ok_or(BinaryError::NodeJsFlagNotPresent(*self))?
             .range();
 
@@ -209,6 +224,10 @@ mod tests {
         // Remove all the flags supported.
         for flag in NodeJsCommandLineFlag::into_enum_iter() {
             flag.disable(&mut data).unwrap();
+
+            if flag.fallback_search_string().is_some() {
+                let _ = flag.disable(&mut data);
+            }
         }
 
         // Ensure they no longer exist

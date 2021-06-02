@@ -1,6 +1,6 @@
 [package]
 name = "electron-hardener"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["ComplexSpaces <complexspacescode@gmail.com>", "1Password"]
 description = "Utility to remove features from Electron that modify runtime behavior"
 keywords = ["electron", "security", "hardening"]

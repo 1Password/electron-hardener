@@ -4,6 +4,9 @@ Notable changes to this project will be documented in the [keep a changelog](htt
 
 ## [Unreleased]
 
+### New
+* Added support for Electron's experimental cookie encryption fuse added in version 13.
+
 ## [0.2.1] - 2021-06-02
 
 ### Fixed

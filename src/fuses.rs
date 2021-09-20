@@ -5,6 +5,9 @@
 use crate::{BinaryError, ElectronApp, PatcherError};
 use std::ops::Range;
 
+#[cfg(test)]
+use enum_iterator::IntoEnumIterator;
+
 /// A representation of a [fuse] that Electron has
 /// built in. They are used to disable specific functionality in the application in a way that can be enforced
 /// via signature checks and codesigning at the OS level.
@@ -19,10 +22,14 @@ use std::ops::Range;
 /// [fuse]: https://www.electronjs.org/docs/tutorial/fuses#the-hard-way
 /// [fuse documentation]: https://www.electronjs.org/docs/tutorial/fuses#what-are-fuses
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(test, derive(IntoEnumIterator))]
 #[non_exhaustive]
 pub enum Fuse {
     /// Disables `ELECTRON_RUN_AS_NODE` functionality in the application.
     RunAsNode,
+    /// Enables [experimental cookie encryption](https://github.com/electron/electron/pull/27524) support
+    /// in the application.
+    EncryptedCookies,
 }
 
 #[derive(Debug, PartialEq)]
@@ -61,6 +68,7 @@ impl Fuse {
     fn schema_pos(&self) -> usize {
         let wire_pos = match self {
             Self::RunAsNode => 1,
+            Self::EncryptedCookies => 2,
         };
 
         wire_pos - 1
@@ -296,5 +304,38 @@ mod tests {
             app.get_fuse_status(FUSE).unwrap(),
             FuseStatus::Present(false)
         );
+    }
+
+    #[test]
+    fn can_read_all_fuses() {
+        let wire = get_wire();
+
+        for fuse in Fuse::into_enum_iter() {
+            assert!(matches!(
+                fuse.fuse_status(wire).unwrap(),
+                FuseStatus::Present(_)
+            ));
+        }
+    }
+
+    #[test]
+    fn fuse_modifies_correct_position() {
+        let mut wire = get_wire().to_vec();
+
+        let fuse1 = Fuse::RunAsNode;
+        let fuse2 = Fuse::EncryptedCookies;
+
+        let fuse_2_original_status = fuse2.fuse_status(&wire).unwrap();
+
+        fuse1.disable(&mut wire).unwrap();
+
+        // Check that modifying one fuse doesn't affect others.
+        assert_eq!(fuse2.fuse_status(&wire).unwrap(), fuse_2_original_status);
+
+        let fuse_1_original_status = fuse1.fuse_status(&wire).unwrap();
+
+        fuse2.disable(&mut wire).unwrap();
+
+        assert_eq!(fuse1.fuse_status(&wire).unwrap(), fuse_1_original_status);
     }
 }

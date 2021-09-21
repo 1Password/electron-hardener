@@ -1,23 +1,9 @@
 //! A re-implementation of the `electron-evil-feature-patcher` CLI tool that works nearly identically.
 
-use electron_hardener::{
-    patcher::{DevToolsMessage, ElectronOption, NodeJsCommandLineFlag},
-    ElectronApp, Fuse,
-};
+use electron_hardener::{patcher::ElectronOption, ElectronApp, Fuse};
 use std::{env, fs};
 
-const FUSES: &[Fuse] = &[Fuse::RunAsNode];
-
-const NODEJS_FLAGS: &[NodeJsCommandLineFlag] = &[
-    NodeJsCommandLineFlag::Inspect,
-    NodeJsCommandLineFlag::InspectBrk,
-    NodeJsCommandLineFlag::InspectPort,
-    NodeJsCommandLineFlag::Debug,
-    NodeJsCommandLineFlag::DebugBrk,
-    NodeJsCommandLineFlag::DebugPort,
-    NodeJsCommandLineFlag::InspectBrkNode,
-    NodeJsCommandLineFlag::InspectPublishUid,
-];
+const FUSES: &[Fuse] = &[Fuse::RunAsNode, Fuse::NodeOptions, Fuse::NodeCliInspect];
 
 const ELECTRON_FLAGS: &[ElectronOption] = &[
     ElectronOption::JsFlags,
@@ -25,9 +11,6 @@ const ELECTRON_FLAGS: &[ElectronOption] = &[
     ElectronOption::RemoteDebuggingPort,
     ElectronOption::WaitForDebuggerChildren,
 ];
-
-const DEVTOOLS_MESSAGES: &[DevToolsMessage] =
-    &[DevToolsMessage::Listening, DevToolsMessage::ListeningWs];
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let application_path = env::args()
@@ -42,16 +25,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         app.set_fuse_status(fuse, false)?;
     }
 
-    for flag in NODEJS_FLAGS.iter().copied() {
-        app.patch_option(flag)?;
-    }
-
     for flag in ELECTRON_FLAGS.iter().copied() {
         app.patch_option(flag)?;
-    }
-
-    for msg in DEVTOOLS_MESSAGES.iter().copied() {
-        app.patch_option(msg)?;
     }
 
     fs::write(application_path, application_bytes)?;

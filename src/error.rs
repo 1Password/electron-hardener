@@ -25,10 +25,12 @@ pub enum BinaryError {
         /// The value found querying the fuse.
         value: u8,
     },
+    #[allow(deprecated)]
     /// The Node.JS command line flag attempted to be disabled wasn't present.
     NodeJsFlagNotPresent(crate::patcher::NodeJsCommandLineFlag),
     /// The Electron command line flag attempted to be disabled wasn't present.
     ElectronOptionNotPresent(crate::patcher::ElectronOption),
+    #[allow(deprecated)]
     /// The Node.JS debugging message attempted to be disabled wasn't present.
     MessageNotPresent(crate::patcher::DevToolsMessage),
 }

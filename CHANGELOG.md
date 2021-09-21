@@ -4,8 +4,14 @@ Notable changes to this project will be documented in the [keep a changelog](htt
 
 ## [Unreleased]
 
+### Changed
+* Updated minimum supported Electron version to 15.
+* Deprecated patching with `NodeJsCommandLineFlag`. This has been superseded by the `NodeCliInspect` fuse.
+* Deprecated patching with `DevToolsMessage`. It is no longer needed due to the functionality provided by the `NodeCliInspect` fuse.
+
 ### New
 * Added support for Electron's experimental cookie encryption fuse added in version 13.
+* Added suport for Electron's new fuses to disable NodeJS debugging flags and environment variables.
 
 ## [0.2.1] - 2021-06-02
 

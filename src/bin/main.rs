@@ -3,7 +3,8 @@
 use electron_hardener::{patcher::ElectronOption, ElectronApp, Fuse};
 use std::{env, fs};
 
-const FUSES: &[Fuse] = &[Fuse::RunAsNode, Fuse::NodeOptions, Fuse::NodeCliInspect];
+const FUSES_TO_DISABLE: &[Fuse] = &[Fuse::RunAsNode, Fuse::NodeOptions, Fuse::NodeCliInspect];
+const FUSES_TO_ENABLE: &[Fuse] = &[Fuse::OnlyLoadAppFromAsar];
 
 const ELECTRON_FLAGS: &[ElectronOption] = &[
     ElectronOption::JsFlags,
@@ -21,8 +22,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut app = ElectronApp::from_bytes(&mut application_bytes)?;
 
-    for fuse in FUSES.iter().copied() {
+    for fuse in FUSES_TO_DISABLE.iter().copied() {
         app.set_fuse_status(fuse, false)?;
+    }
+
+    for fuse in FUSES_TO_ENABLE.iter().copied() {
+        app.set_fuse_status(fuse, true)?;
     }
 
     for flag in ELECTRON_FLAGS.iter().copied() {

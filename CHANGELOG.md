@@ -12,6 +12,7 @@ Notable changes to this project will be documented in the [keep a changelog](htt
 ### New
 * Added support for Electron's experimental cookie encryption fuse added in version 13.
 * Added suport for Electron's new fuses to disable NodeJS debugging flags and environment variables.
+* Added support for Electron's new ASAR integrity fuses to protect against unknown code from being ran.
 
 ## [0.2.1] - 2021-06-02
 

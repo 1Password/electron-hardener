@@ -38,6 +38,18 @@ pub enum Fuse {
     ///
     /// [debugging command-line flags](https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options)
     NodeCliInspect,
+    /// Enables the integrity validation of the `app.asar` file when it and resources inside are loaded by Electron.
+    ///
+    /// This is designed to prevent tampering with application code on supported platforms.
+    ///
+    /// To use this, an Electron packaging tool must create the correct checksum and embed it into the application.
+    /// Otherwise, this will have no effect on custom Electron apps.
+    ///
+    /// **Note**: This fuse currently only affects macOS. It is a no-op on other operating systems.
+    EmbeddedAsarIntegrityValidation,
+    /// Forces Electron to only load the application from `app.asar`. Other files and folders will be ignored
+    /// if they exist in the search path.
+    OnlyLoadAppFromAsar,
 }
 
 #[derive(Debug, PartialEq)]
@@ -79,6 +91,8 @@ impl Fuse {
             Self::EncryptedCookies => 2,
             Self::NodeOptions => 3,
             Self::NodeCliInspect => 4,
+            Self::EmbeddedAsarIntegrityValidation => 5,
+            Self::OnlyLoadAppFromAsar => 6,
         };
 
         wire_pos - 1

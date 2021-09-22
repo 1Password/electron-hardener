@@ -4,6 +4,8 @@ Notable changes to this project will be documented in the [keep a changelog](htt
 
 ## [Unreleased]
 
+## [0.2.2] - 2021-09-22
+
 ### Changed
 * Updated minimum supported Electron version to 15.
 * Deprecated patching with `NodeJsCommandLineFlag`. This has been superseded by the `NodeCliInspect` fuse.
@@ -11,7 +13,7 @@ Notable changes to this project will be documented in the [keep a changelog](htt
 
 ### New
 * Added support for Electron's experimental cookie encryption fuse added in version 13.
-* Added suport for Electron's new fuses to disable NodeJS debugging flags and environment variables.
+* Added support for Electron's new fuses to disable NodeJS debugging flags and environment variables.
 * Added support for Electron's new ASAR integrity fuses to protect against unknown code from being ran.
 
 ## [0.2.1] - 2021-06-02
@@ -33,3 +35,4 @@ Inital release
 [0.1.0]: https://github.com/1Password/electron-hardener/releases/tag/v0.1.0
 [0.2.0]: https://github.com/1Password/electron-hardener/releases/tag/v0.2.0
 [0.2.1]: https://github.com/1Password/electron-hardener/releases/tag/v0.2.1
+[0.2.2]: https://github.com/1Password/electron-hardener/releases/tag/v0.2.2

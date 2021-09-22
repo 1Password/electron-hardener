@@ -4,6 +4,8 @@ Notable changes to this project will be documented in the [keep a changelog](htt
 
 ## [Unreleased]
 
+## [0.2.2] - 2021-09-22
+
 ### Changed
 * Updated minimum supported Electron version to 15.
 * Deprecated patching with `NodeJsCommandLineFlag`. This has been superseded by the `NodeCliInspect` fuse.
@@ -33,3 +35,4 @@ Inital release
 [0.1.0]: https://github.com/1Password/electron-hardener/releases/tag/v0.1.0
 [0.2.0]: https://github.com/1Password/electron-hardener/releases/tag/v0.2.0
 [0.2.1]: https://github.com/1Password/electron-hardener/releases/tag/v0.2.1
+[0.2.2]: https://github.com/1Password/electron-hardener/releases/tag/v0.2.2

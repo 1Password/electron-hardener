@@ -30,6 +30,26 @@ pub enum Fuse {
     /// Enables [experimental cookie encryption](https://github.com/electron/electron/pull/27524) support
     /// in the application.
     EncryptedCookies,
+    /// Disbles the ability to use the [NODE_OPTIONS] environment variable on the application.
+    ///
+    /// [NODE_OPTIONS]: (https://nodejs.org/api/cli.html#cli_node_options_options)
+    NodeOptions,
+    /// Disables the ability to use the [debugging command-line flags] on the application.
+    ///
+    /// [debugging command-line flags](https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options)
+    NodeCliInspect,
+    /// Enables the integrity validation of the `app.asar` file when it and resources inside are loaded by Electron.
+    ///
+    /// This is designed to prevent tampering with application code on supported platforms.
+    ///
+    /// To use this, an Electron packaging tool must create the correct checksum and embed it into the application.
+    /// Otherwise, this will have no effect on custom Electron apps.
+    ///
+    /// **Note**: This fuse currently only affects macOS. It is a no-op on other operating systems.
+    EmbeddedAsarIntegrityValidation,
+    /// Forces Electron to only load the application from `app.asar`. Other files and folders will be ignored
+    /// if they exist in the search path.
+    OnlyLoadAppFromAsar,
 }
 
 #[derive(Debug, PartialEq)]
@@ -69,6 +89,10 @@ impl Fuse {
         let wire_pos = match self {
             Self::RunAsNode => 1,
             Self::EncryptedCookies => 2,
+            Self::NodeOptions => 3,
+            Self::NodeCliInspect => 4,
+            Self::EmbeddedAsarIntegrityValidation => 5,
+            Self::OnlyLoadAppFromAsar => 6,
         };
 
         wire_pos - 1
@@ -324,6 +348,7 @@ mod tests {
 
         let fuse1 = Fuse::RunAsNode;
         let fuse2 = Fuse::EncryptedCookies;
+        let fuse3 = Fuse::NodeOptions;
 
         let fuse_2_original_status = fuse2.fuse_status(&wire).unwrap();
 
@@ -337,5 +362,16 @@ mod tests {
         fuse2.disable(&mut wire).unwrap();
 
         assert_eq!(fuse1.fuse_status(&wire).unwrap(), fuse_1_original_status);
+
+        let left_fuse_original_status = fuse1.fuse_status(&wire).unwrap();
+        let right_fuse_original_status = fuse3.fuse_status(&wire).unwrap();
+
+        fuse2.enable(&mut wire).unwrap();
+
+        assert_eq!(fuse1.fuse_status(&wire).unwrap(), left_fuse_original_status);
+        assert_eq!(
+            fuse3.fuse_status(&wire).unwrap(),
+            right_fuse_original_status
+        );
     }
 }

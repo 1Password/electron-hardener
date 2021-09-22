@@ -1,8 +1,6 @@
 //! A small and basic sample of how to use the library's functionality, without needing an Electron app present.
 
-use electron_hardener::{
-    patcher::NodeJsCommandLineFlag, BinaryError, ElectronApp, Fuse, PatcherError,
-};
+use electron_hardener::{patcher::ElectronOption, BinaryError, ElectronApp, Fuse, PatcherError};
 
 fn main() {
     let mut application_bytes = {
@@ -16,22 +14,22 @@ fn main() {
     let fuse = Fuse::RunAsNode;
 
     let original_status = app.get_fuse_status(fuse).unwrap();
-    println!("The unmodified fuse status is {:?}", original_status);
+    println!("The unmodified fuse status is `{:?}`", original_status);
 
     println!("Removing RUN_AS_NODE functionality");
     app.set_fuse_status(fuse, false).unwrap();
 
     let new_status = app.get_fuse_status(fuse).unwrap();
-    println!("The new fuse status is now {:?}", new_status);
+    println!("The new fuse status is now `{:?}`", new_status);
 
-    let flag = NodeJsCommandLineFlag::Inspect;
+    let flag = ElectronOption::JsFlags;
 
     println!("Removing {:?} functionality from the app", flag);
     app.patch_option(flag).unwrap();
 
     match app.patch_option(flag) {
-        Err(PatcherError::Binary(BinaryError::NodeJsFlagNotPresent(_))) => {
-            println!("Removed the Node.JS flag!")
+        Err(PatcherError::Binary(BinaryError::ElectronOptionNotPresent(_))) => {
+            println!("Removed the Electron flag!")
         }
         _ => println!("Didn't remove the flag!"),
     }

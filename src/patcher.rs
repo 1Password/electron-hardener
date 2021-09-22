@@ -17,6 +17,7 @@ pub trait Patchable: private::Sealed {
     fn disable(&self, binary: &mut [u8]) -> Result<(), PatcherError>;
 }
 
+#[allow(deprecated)]
 mod private {
     use super::{DevToolsMessage, ElectronOption, NodeJsCommandLineFlag};
 
@@ -32,9 +33,12 @@ mod private {
 /// See the [Node.JS documentation] for details on what each flag does.
 ///
 /// [Node.JS documentation]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options
+#[deprecated(
+    since = "0.2.2",
+    note = "This has been superseded by the NodeCliInspect fuse."
+)]
 #[allow(missing_docs)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[cfg_attr(test, derive(IntoEnumIterator))]
 #[non_exhaustive]
 pub enum NodeJsCommandLineFlag {
     Inspect,
@@ -47,6 +51,7 @@ pub enum NodeJsCommandLineFlag {
     InspectPublishUid,
 }
 
+#[allow(deprecated)]
 impl NodeJsCommandLineFlag {
     const fn search_string(&self) -> &'static str {
         match self {
@@ -71,6 +76,7 @@ impl NodeJsCommandLineFlag {
     }
 }
 
+#[allow(deprecated)]
 impl Patchable for NodeJsCommandLineFlag {
     fn disable(&self, binary: &mut [u8]) -> Result<(), PatcherError> {
         let search = Regex::new(self.search_string()).expect("all regex patterns should be valid");
@@ -153,8 +159,11 @@ impl Patchable for ElectronOption {
 /// that Chromium/Electron/Node.JS handle parsing command line arguments. If something is changed
 /// and a debugging flag slips through, modifying one of these will cause the application to trigger a segemntation fault
 /// and be terminated by the OS, exiting immediately.
+#[deprecated(
+    since = "0.2.2",
+    note = "This is no longer necessary due to the NodeCliInspect fuse's functionality."
+)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[cfg_attr(test, derive(IntoEnumIterator))]
 #[non_exhaustive]
 pub enum DevToolsMessage {
     /// The message printed to standard out when Node.JS listens on TCP port.
@@ -167,15 +176,18 @@ pub enum DevToolsMessage {
     ListeningWs,
 }
 
+#[allow(deprecated)]
 impl DevToolsMessage {
     const fn search_string(&self) -> &'static str {
         match self {
+            #[allow(deprecated)]
             Self::Listening => "\0Debugger listening on %s\n\0",
             Self::ListeningWs => "\0\nDevTools listening on ws://%s%s\n\0",
         }
     }
 }
 
+#[allow(deprecated)]
 impl Patchable for DevToolsMessage {
     fn disable(&self, binary: &mut [u8]) -> Result<(), PatcherError> {
         let search = Regex::new(self.search_string()).expect("all regex patterns should be valid");
@@ -218,11 +230,24 @@ mod tests {
     const TEST_DATA: &[u8] = include_bytes!("../examples/fake_electron_flags.bin");
 
     #[test]
+    #[allow(deprecated)]
     fn disabling_nodejs_flags_works() {
+        use NodeJsCommandLineFlag::*;
         let mut data = TEST_DATA.to_vec();
 
+        const ALL_FLAGS: &[NodeJsCommandLineFlag] = &[
+            Inspect,
+            InspectBrk,
+            InspectPort,
+            Debug,
+            DebugBrk,
+            DebugPort,
+            InspectBrkNode,
+            InspectPublishUid,
+        ];
+
         // Remove all the flags supported.
-        for flag in NodeJsCommandLineFlag::into_enum_iter() {
+        for flag in ALL_FLAGS {
             flag.disable(&mut data).unwrap();
 
             if flag.fallback_search_string().is_some() {
@@ -231,11 +256,11 @@ mod tests {
         }
 
         // Ensure they no longer exist
-        for flag in NodeJsCommandLineFlag::into_enum_iter() {
+        for flag in ALL_FLAGS {
             assert_eq!(
                 flag.disable(&mut data),
                 Err(PatcherError::Binary(BinaryError::NodeJsFlagNotPresent(
-                    flag
+                    *flag
                 )))
             );
         }
@@ -261,17 +286,21 @@ mod tests {
         }
     }
 
+    #[allow(deprecated)]
     #[test]
     fn disabling_debugging_messages_works() {
         let mut data = TEST_DATA.to_vec();
 
+        const ALL_MESSAGES: &[DevToolsMessage] =
+            &[DevToolsMessage::ListeningWs, DevToolsMessage::Listening];
+
         // Remove all the options supported.
-        for msg in DevToolsMessage::into_enum_iter() {
+        for msg in ALL_MESSAGES.iter().copied() {
             msg.disable(&mut data).unwrap();
         }
 
         // Ensure they no longer exist
-        for msg in DevToolsMessage::into_enum_iter() {
+        for msg in ALL_MESSAGES.iter().copied() {
             assert_eq!(
                 msg.disable(&mut data),
                 Err(PatcherError::Binary(BinaryError::MessageNotPresent(msg)))

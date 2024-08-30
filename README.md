@@ -45,7 +45,7 @@ electron-hardener ./path/to/packaged/electron/app
 ### Library
 In your project's `Cargo.toml` file:
 ```toml
-electron_hardener = "0.1"
+electron_hardener = "0.2.2"
 ```
 
 ### Command line tool

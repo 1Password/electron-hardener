@@ -13,7 +13,7 @@ pub enum BinaryError {
     NoFuseVersion,
     /// The length of the fuse was not found in the binary.
     NoFuseLength,
-    /// The requested fuse to be modifed wasn't present in the fuse wire.
+    /// The requested fuse to be modified wasn't present in the fuse wire.
     FuseDoesNotExist(crate::Fuse),
     /// An unknown fuse status was encountered.
     ///
@@ -26,12 +26,12 @@ pub enum BinaryError {
         value: u8,
     },
     #[allow(deprecated)]
-    /// The Node.JS command line flag attempted to be disabled wasn't present.
+    /// The Node.js command line flag attempted to be disabled wasn't present.
     NodeJsFlagNotPresent(crate::patcher::NodeJsCommandLineFlag),
     /// The Electron command line flag attempted to be disabled wasn't present.
     ElectronOptionNotPresent(crate::patcher::ElectronOption),
     #[allow(deprecated)]
-    /// The Node.JS debugging message attempted to be disabled wasn't present.
+    /// The Node.js debugging message attempted to be disabled wasn't present.
     MessageNotPresent(crate::patcher::DevToolsMessage),
 }
 
@@ -68,7 +68,7 @@ impl std::error::Error for BinaryError {}
 pub enum PatcherError {
     /// A part of the provided binary's contents was invalid.
     Binary(BinaryError),
-    /// A different fuse schema version was found then what the library supports.
+    /// A different fuse schema version was found than what the library supports.
     FuseVersion {
         /// The supported version of the Electron fuse schema by this library.
         expected: u8,

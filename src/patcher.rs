@@ -30,9 +30,9 @@ mod private {
 
 /// List of known command line debugging flags that can be disabled
 ///
-/// See the [Node.JS documentation] for details on what each flag does.
+/// See the [Node.js documentation] for details on what each flag does.
 ///
-/// [Node.JS documentation]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options
+/// [Node.js documentation]: https://nodejs.org/en/docs/guides/debugging-getting-started/#command-line-options
 #[deprecated(
     since = "0.2.2",
     note = "This has been superseded by the NodeCliInspect fuse."
@@ -151,12 +151,12 @@ impl Patchable for ElectronOption {
 }
 
 /// List of known developer tool command line messages that can be
-/// written to stdout by Node.JS during debugging.
+/// written to stdout by Node.js during debugging.
 ///
 /// ### Warning
 ///
 /// Disabling these is a worst-case fallback protection against internal changes to the way
-/// that Chromium/Electron/Node.JS handle parsing command line arguments. If something is changed
+/// that Chromium/Electron/Node.js handle parsing command line arguments. If something is changed
 /// and a debugging flag slips through, modifying one of these will cause the application to trigger a segemntation fault
 /// and be terminated by the OS, exiting immediately.
 #[deprecated(
@@ -166,11 +166,11 @@ impl Patchable for ElectronOption {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum DevToolsMessage {
-    /// The message printed to standard out when Node.JS listens on TCP port.
+    /// The message printed to standard out when Node.js listens on TCP port.
     ///
     /// Ex: `Debugger listening on 127.0.0.1:9229/uuid`
     Listening,
-    /// The message printed to standard out when Node.JS listens on a websocket.
+    /// The message printed to standard out when Node.js listens on a websocket.
     ///
     /// Ex: `Debugger listening on ws://127.0.0.1:9229/uuid`
     ListeningWs,

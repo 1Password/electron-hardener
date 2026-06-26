@@ -13,7 +13,7 @@
 //!
 //! ### A Note on Effectiveness
 //!
-//! Any patching this tool does is considered a strong "best effort" as the Chromium, Electron, and Node.JS teams are free to potentially
+//! Any patching this tool does is considered a strong "best effort" as the Chromium, Electron, and Node.js teams are free to potentially
 //! make changes to the argument parser, set of flags, etc.
 //!
 //! For a stronger assurance, consider disabling the [dev tools messages](patcher::DevToolsMessage).

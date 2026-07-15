@@ -19,15 +19,20 @@ jobs:
           # MSRV
           - 1.46.0
     steps:
-      - uses: actions/checkout@v2
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
         with:
           persist-credentials: false
-      - uses: actions-rs/toolchain@v1
+      - uses: step-security/actions-rs-toolchain@40a2f87e50bed6faa2d050e99810b226b75d8c8a # v1.0.7
         with:
           profile: minimal
           toolchain: ${{ matrix.rust }}
           components: clippy
-      - uses: actions-rs/cargo@v1
+      - uses: step-security/actions-rs-cargo@34f23e8d4bb3618bc5485c3341f2bf88024fc4dc # v1.0.1
         with:
           command: clippy
           args: -- -D clippy::dbg_macro -D warnings -D missing_docs -F unused_must_use
@@ -36,15 +41,20 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
         with:
           persist-credentials: false
 
-      - uses: actions-rs/toolchain@v1
+      - uses: step-security/actions-rs-toolchain@40a2f87e50bed6faa2d050e99810b226b75d8c8a # v1.0.7
         with:
           profile: minimal
           toolchain: stable
-      - uses: actions-rs/cargo@v1
+      - uses: step-security/actions-rs-cargo@34f23e8d4bb3618bc5485c3341f2bf88024fc4dc # v1.0.1
         with:
           command: test
 
@@ -52,15 +62,20 @@ jobs:
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
         with:
           persist-credentials: false
-      - uses: actions-rs/toolchain@v1
+      - uses: step-security/actions-rs-toolchain@40a2f87e50bed6faa2d050e99810b226b75d8c8a # v1.0.7
         with:
           profile: minimal
           toolchain: stable
           components: rustfmt
-      - uses: actions-rs/cargo@v1
+      - uses: step-security/actions-rs-cargo@34f23e8d4bb3618bc5485c3341f2bf88024fc4dc # v1.0.1
         with:
           command: fmt
           args: --all -- --check
